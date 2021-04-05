@@ -1,6 +1,7 @@
 package me.kwanghoon.springrestapi.events;
 
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,14 +19,18 @@ public class EventController {
 
     private final EventRepository eventRepository;
 
-    public EventController(EventRepository eventRepository) {
+    private final ModelMapper modelMapper;
+
+    public EventController(EventRepository eventRepository, ModelMapper modelMapper) {
         this.eventRepository = eventRepository;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping
     public ResponseEntity createEvent(
-        @RequestBody Event event
+        @RequestBody EventDto eventDto
     ) {
+        Event event = modelMapper.map(eventDto, Event.class); // DTO to Entity
         Event createdEvent = eventRepository.save(event);
 
         URI uri = linkTo(EventController.class).slash(createdEvent.getId()).toUri();

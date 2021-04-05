@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
@@ -20,7 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(value = SpringExtension.class)
-@WebMvcTest // Web 용 Bean 들만 가져옴
+@SpringBootTest
+@AutoConfigureMockMvc
+//@WebMvcTest // Web 용 Bean 들만 가져옴
 public class EventControllerTests {
 
     @Autowired
@@ -29,12 +33,13 @@ public class EventControllerTests {
     @Autowired
     ObjectMapper objectMapper;
 
-    @MockBean
-    EventRepository eventRepository;
+//    @MockBean
+//    EventRepository eventRepository;
 
     @Test
     public void createEvent() throws Exception {
         Event event = Event.builder()
+            .id(100)
             .name("spring")
             .description("rest api with spring")
             .beginEnrollmentDateTime(LocalDateTime.of(2021, 4, 4, 4, 4))
@@ -46,9 +51,6 @@ public class EventControllerTests {
             .limitOfEnrollment(100)
             .location("강남")
             .build();
-
-        event.setId(10);
-        Mockito.when(eventRepository.save(event)).thenReturn(event);
 
         mockMvc.perform(
             post("/api/events/")

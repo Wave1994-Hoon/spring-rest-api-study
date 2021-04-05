@@ -2,12 +2,15 @@ package me.kwanghoon.springrestapi.events;
 
 import lombok.*;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Builder @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter @EqualsAndHashCode(of = "id")
+@Entity
 public class Event {
 
+    @Id @GeneratedValue
     private Integer id;
 
     private String name;
@@ -28,6 +31,7 @@ public class Event {
 
     private boolean free;
 
+    @Enumerated(EnumType.STRING)
     private EventStatus eventStatus = EventStatus.DRAFT;
 
     private String location; // optional 이게 없으면 온라인 모임

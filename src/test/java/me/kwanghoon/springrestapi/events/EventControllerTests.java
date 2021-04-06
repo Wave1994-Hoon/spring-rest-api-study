@@ -38,8 +38,8 @@ public class EventControllerTests {
 
     @Test
     public void createEvent() throws Exception {
-        Event event = Event.builder()
-            .id(100)
+        EventDto event = EventDto.builder()
+//            .id(100)
             .name("spring")
             .description("rest api with spring")
             .beginEnrollmentDateTime(LocalDateTime.of(2021, 4, 4, 4, 4))
@@ -61,5 +61,32 @@ public class EventControllerTests {
             .andDo(print())  // 결과 값 출력
             .andExpect(status().isCreated())
             .andExpect(jsonPath("id").exists());
+    }
+
+    @Test
+    public void createEventBadRequest() throws Exception {
+        Event event = Event.builder()
+            .id(100)
+            .name("spring")
+            .description("rest api with spring")
+            .beginEnrollmentDateTime(LocalDateTime.of(2021, 4, 4, 4, 4))
+            .closeEnrollmentDateTime(LocalDateTime.of(2021, 5, 4, 4, 4))
+            .beginEventDateTime(LocalDateTime.of(2021, 6, 4, 4, 4))
+            .endEventDateTime(LocalDateTime.of(2021, 7, 4, 4, 4))
+            .basePrice(100)
+            .maxPrice(200)
+            .limitOfEnrollment(100)
+            .location("강남")
+            .build();
+
+        mockMvc.perform(
+            post("/api/events/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(event))
+        )
+            .andDo(print())  // 결과 값 출력
+            .andExpect(status().isBadRequest());
+//            .andExpect(jsonPath("id").exists());
     }
 }

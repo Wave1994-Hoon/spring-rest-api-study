@@ -1,6 +1,5 @@
 package me.kwanghoon.springrestapi.events;
 
-import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,7 @@
 package me.kwanghoon.springrestapi.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class EventControllerTests {
 //    EventRepository eventRepository;
 
     @Test
+    @DisplayName("이벤트 생성 테스트")
     public void createEvent() throws Exception {
         EventDto event = EventDto.builder()
 //            .id(100)
@@ -61,6 +63,7 @@ public class EventControllerTests {
     }
 
     @Test
+    @DisplayName("입력 받을 수 없는 값을 받았을 때 이벤트 생성 테스트")
     public void createEventBadRequest() throws Exception {
         Event event = Event.builder()
             .id(100)
@@ -87,6 +90,7 @@ public class EventControllerTests {
     }
 
     @Test
+    @DisplayName("입력 받을 수 없는 값을 누락되었을 때 이벤트 생성 테스트")
     public void createEventBadRequestEmptyInput() throws Exception {
         EventDto eventDto = EventDto.builder().build();
 
@@ -101,6 +105,7 @@ public class EventControllerTests {
     }
 
     @Test
+    @DisplayName("입력 받을 수 없는 값이 잘못되었을 때 이벤트 생성 테스트")
     public void createEventBadRequestWrongInput() throws Exception {
         Event event = Event.builder()
             .id(100)

@@ -40,13 +40,13 @@ public class EventController {
     ) {
 
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors);
         }
 
         eventValidator.validate(eventDto, errors);
 
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors);
         }
 
         Event event = modelMapper.map(eventDto, Event.class); // DTO to Entity
@@ -54,6 +54,7 @@ public class EventController {
 
         URI uri = linkTo(EventController.class).slash(createdEvent.getId()).toUri();
 
+        /* 자바 빈 스팩을 준수하기 떄문에 json으로 serializer 됨 -> ObjectMapper가 BeanSerializer를 사용하여 작업 수행 */
         return ResponseEntity.created(uri).body(createdEvent);
     }
 }

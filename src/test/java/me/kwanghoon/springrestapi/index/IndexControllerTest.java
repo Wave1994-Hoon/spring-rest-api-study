@@ -1,6 +1,6 @@
 package me.kwanghoon.springrestapi.index;
 
-import me.kwanghoon.springrestapi.events.BaseControllerTest;
+import me.kwanghoon.springrestapi.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

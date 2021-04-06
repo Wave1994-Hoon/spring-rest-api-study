@@ -1,6 +1,7 @@
-package me.kwanghoon.springrestapi.events;
+package me.kwanghoon.springrestapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.kwanghoon.springrestapi.events.EventRepository;
 import org.junit.Ignore;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

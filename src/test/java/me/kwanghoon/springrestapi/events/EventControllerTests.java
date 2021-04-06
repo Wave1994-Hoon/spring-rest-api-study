@@ -1,5 +1,6 @@
 package me.kwanghoon.springrestapi.events;
 
+import me.kwanghoon.springrestapi.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.MediaTypes;
@@ -15,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //@WebMvcTest // Web 용 Bean 들만 가져옴
-public class EventControllerTests extends BaseControllerTest{
+public class EventControllerTests extends BaseControllerTest {
 
     @Test
     @DisplayName("이벤트 생성 테스트")

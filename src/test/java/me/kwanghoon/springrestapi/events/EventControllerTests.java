@@ -1,40 +1,21 @@
 package me.kwanghoon.springrestapi.events;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.stream.IntStream;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(value = SpringExtension.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
 //@WebMvcTest // Web 용 Bean 들만 가져옴
-public class EventControllerTests {
-
-    @Autowired
-    MockMvc mockMvc; // 웹 서버를 띄우지 않지만 dispatcherServlet은 띄움
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-//    @MockBean
-//    EventRepository eventRepository;
+public class EventControllerTests extends BaseControllerTest{
 
     @Test
     @DisplayName("이벤트 생성 테스트")
@@ -133,5 +114,53 @@ public class EventControllerTests {
             .andExpect(jsonPath("$[0].defaultMessage").exists())
             .andExpect(jsonPath("$[0].code").exists())
         ;
+    }
+
+    @Test
+    @DisplayName("30개의 이벤트를 10개씩 두번쨰 페이지 조회")
+    public void queryEvents() throws Exception {
+        // Given
+        IntStream.range(0, 30).forEach(this::generateEvent);
+
+        // When & Then
+        mockMvc.perform(get("/api/events")
+                .param("page", "1")
+                .param("size", "10")
+                .param("sort", "name,DESC")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("page").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("기존 이벤트를 하나 조회")
+    public void getEvent() throws Exception {
+        // Given
+        Event event = generateEvent(100);
+
+        // When & Then
+        mockMvc.perform(get("/api/events/{id}", event.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("name").exists())
+            .andExpect(jsonPath("id").exists());
+    }
+
+    @Test
+    @DisplayName("없는 이벤트 조회 시, 404 응답")
+    public void getNotfoundEvent() throws Exception {
+        // When & Then
+        mockMvc.perform(get("/api/events/1111111"))
+            .andExpect(status().isNotFound());
+    }
+
+    private Event generateEvent(int index) {
+        Event event = Event.builder()
+            .name("event" + index)
+            .description("test event")
+            .build();
+
+        return eventRepository.save(event);
     }
 }

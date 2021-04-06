@@ -1,16 +1,19 @@
 package me.kwanghoon.springrestapi.events;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.validation.Errors;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -36,7 +39,8 @@ public class EventController {
 
     @PostMapping
     public ResponseEntity createEvent(
-        @RequestBody @Valid EventDto eventDto, Errors errors
+        @RequestBody @Valid EventDto eventDto,
+        Errors errors
     ) {
 
         if (errors.hasErrors()) {
@@ -58,5 +62,28 @@ public class EventController {
 
         /* 자바 빈 스팩을 준수하기 떄문에 json으로 serializer 됨 -> ObjectMapper가 BeanSerializer를 사용하여 작업 수행 */
         return ResponseEntity.created(uri).body(createdEvent);
+    }
+
+    @GetMapping
+    public ResponseEntity queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler) {
+        Page<Event> events = eventRepository.findAll(pageable);
+        PagedModel<EventResource> eventResources = assembler.toModel(events, EventResource::new);
+
+        return ResponseEntity.ok(eventResources);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getEvent(@PathVariable Integer id) {
+        Optional<Event> optionalEvent = eventRepository.findById(id);
+
+        if (optionalEvent.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Event event = optionalEvent.get();
+        EventResource body = new EventResource(event);
+
+        return ResponseEntity.ok(body);
+
     }
 }

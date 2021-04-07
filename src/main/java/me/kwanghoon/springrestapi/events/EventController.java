@@ -1,5 +1,6 @@
 package me.kwanghoon.springrestapi.events;
 
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Controller
+@AllArgsConstructor
 @RequestMapping(value = "/api/events", produces = MediaTypes.HAL_JSON_VALUE)
 public class EventController {
 
@@ -26,16 +28,6 @@ public class EventController {
     private final ModelMapper modelMapper;
 
     private final EventValidator eventValidator;
-
-    public EventController(
-        EventRepository eventRepository,
-        ModelMapper modelMapper,
-        EventValidator eventValidator
-    ) {
-        this.eventRepository = eventRepository;
-        this.modelMapper = modelMapper;
-        this.eventValidator = eventValidator;
-    }
 
     @PostMapping
     public ResponseEntity createEvent(

@@ -11,7 +11,7 @@ public class IndexControllerTest extends BaseControllerTest {
 
     @Test
     public void index() throws Exception {
-        mockMvc.perform(get("/api/"))
+        mockMvc.perform(get("/api/index"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("_links.events").exists());
     }

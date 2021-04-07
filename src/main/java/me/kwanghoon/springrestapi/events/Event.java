@@ -1,6 +1,7 @@
 package me.kwanghoon.springrestapi.events;
 
 import lombok.*;
+import me.kwanghoon.springrestapi.accounts.Account;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -39,6 +40,9 @@ public class Event {
     private int basePrice; // optional
 
     private int maxPrice; // optional
+
+    @ManyToOne
+    private Account manager;
 
     public void update() {
         if (this.basePrice == 0 && this.maxPrice == 0) {
